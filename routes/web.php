@@ -1,6 +1,6 @@
 <?php
-require __DIR__.'/product.php';
-require __DIR__.'/pos.php';
+require __DIR__ . '/product.php';
+require __DIR__ . '/pos.php';
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\DashboardController;
@@ -23,7 +23,7 @@ use App\Http\Controllers\ChangePriceReasonController;
 use App\Http\Controllers\InventoryTransferController;
 use Illuminate\Support\Facades\Response;
 
-Route::get('/', function (){
+Route::get('/', function () {
     return redirect()->route('dashboard');
 });
 Route::get('/generate-barcode', [ProductController::class, 'generateBarcode']);
@@ -51,15 +51,15 @@ Route::middleware(['auth', 'auth.session'])->group(function () {
         'branches' => BranchController::class,
         'inventory-transfer' => InventoryTransferController::class,
     ]);
-  
+
     Route::get('product-validate/{barcode}', [ProductController::class, 'productValidate']);
     Route::post('/inventory-transfer-items', [InventoryTransferController::class, 'InventoryTransferItems']);
-    
-    Route::get('roles-and-permissions/role-list', [RoleAndPermissionController::class,'show'])->name('roles-and-permissions.role-list');
-    Route::post('roles-and-permissions/store-role', [RoleAndPermissionController::class,'storeRole'])->name('roles-and-permissions.store-role');
+
+    Route::get('roles-and-permissions/role-list', [RoleAndPermissionController::class, 'show'])->name('roles-and-permissions.role-list');
+    Route::post('roles-and-permissions/store-role', [RoleAndPermissionController::class, 'storeRole'])->name('roles-and-permissions.store-role');
 
     Route::post('/test-products', [ProductController::class, 'testing'])->name('test.products');
-   
+
     Route::get('general-settings', [SettingController::class, 'generalSetting'])->name('general-settings.index');
     Route::post('general-settings.store', [SettingController::class, 'generalSettingStore'])->name('general-settings.store');
 
@@ -78,27 +78,30 @@ Route::middleware(['auth', 'auth.session'])->group(function () {
     Route::post('/color-status', [ColorController::class, 'colorStatus'])->name('color-status');
     Route::post('/size-scale-status', [SizeScaleController::class, 'sizeScaleStatus'])->name('size-scale-status');
     Route::post('/size-status', [SizeController::class, 'sizeStatus'])->name('size-status');
-    Route::post('/supplier-status',[SupplierController::class, 'supplierStatus'])->name('supplier-status');
+    Route::post('/supplier-status', [SupplierController::class, 'supplierStatus'])->name('supplier-status');
     Route::post('/tax-status', [TaxController::class, 'taxStatus'])->name('tax-status');
     Route::post('/product-status', [ProductController::class, 'productStatus'])->name('product-status');
     Route::post('/tag-status', [TagController::class, 'tagStatus'])->name('tag-status');
-   
+
     Route::get('/get-states/{countryId}', [SupplierController::class, 'getStates']);
     Route::get('/get-product-type/{departmentId}', [ProductController::class, 'getDepartment']);
 
     //************************Import Csv Route********************/
     Route::post('import-brands', [BrandController::class, 'importBrands'])->name('import.brands');
 
-    Route::post('printbarcode-store-session',[ProductController::class, 'setBarcodeSession'])->name('printbarcode.store.session');
+    Route::post('printbarcode-store-session', [ProductController::class, 'setBarcodeSession'])->name('printbarcode.store.session');
 
     Route::get('products/print-barcodes/preview', [ProductController::class, 'downloadBarcodes'])->name('download.barcodes');
     Route::get('products/print-barcodes/save', [ProductController::class, 'saveBarcodes'])->name('save.barcodes');
-    
+
     Route::get('/export/csv', [ProductController::class, 'downloadExcel'])->name('export.csv');
 
-    Route::get('download-brand-sample', function() {
+    Route::get('download-brand-sample', function () {
         $file = public_path('assets/samples/brand.csv');
         return Response::download($file);
     });
-    
+
+    // Profile Routes
+    Route::get('/profile', [UserController::class, 'editProfile'])->name('profile.edit');
+    Route::put('/profile', [UserController::class, 'updateProfile'])->name('profile.update');
 });

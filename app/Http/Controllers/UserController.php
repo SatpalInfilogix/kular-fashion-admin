@@ -17,11 +17,11 @@ class UserController extends Controller
      */
     public function index()
     {
-        if(!Gate::allows('view users')) {
+        if (!Gate::allows('view users')) {
             abort(403);
         }
         $users = User::with('branch')->get();
-        return view('users.index',compact('users'));
+        return view('users.index', compact('users'));
     }
 
     /**
@@ -29,12 +29,12 @@ class UserController extends Controller
      */
     public function create()
     {
-        if(!Gate::allows('create users')) {
+        if (!Gate::allows('create users')) {
             abort(403);
         }
-        $roles = Role::all();
-        $branches = Branch::where('status','Active')->get();
-        return view('users.create',compact('roles','branches'));
+        $roles = Role::where('name', '!=', 'Super Admin')->get();
+        $branches = Branch::where('status', 'Active')->get();
+        return view('users.create', compact('roles', 'branches'));
     }
 
     /**
@@ -42,13 +42,13 @@ class UserController extends Controller
      */
     public function store(Request $request)
     {
-        if(!Gate::allows('create users')) {
+        if (!Gate::allows('create users')) {
             abort(403);
         }
         $validator = Validator::make($request->all(), [
-            'email' => 'required|email|unique:users,email', 
-            'name' => 'required', 
-            'password' => 'required', 
+            'email' => 'required|email|unique:users,email',
+            'name' => 'required',
+            'password' => 'required',
             'role' => 'required|exists:roles,name',
         ]);
         if ($validator->fails()) {
@@ -63,8 +63,7 @@ class UserController extends Controller
         ]);
         $user->assignRole($request->role);
 
-        return redirect()->route('users.index')->with("success","User created successfully");
-
+        return redirect()->route('users.index')->with("success", "User created successfully");
     }
 
     /**
@@ -78,31 +77,71 @@ class UserController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
+    
+
+    public function editProfile()
+    {
+        $user = auth()->user(); // Get the currently authenticated user
+        $branches = Branch::all(); // Include branches if needed
+        return view('profile.edit', compact('user', 'branches'));
+    }
+
+
+    public function updateProfile(Request $request)
+    {
+        $user = auth()->user();
+
+        $request->validate([
+            'name' => 'required|string|max:255',
+            'email' => 'required|email|unique:users,email,' . $user->id,
+            'password' => 'nullable|min:8|confirmed',
+        ]);
+
+        $user->name = $request->name;
+        $user->email = $request->email;
+
+        if ($request->filled('password')) {
+            $user->password = Hash::make($request->password);
+        }
+
+        $user->save();
+
+        return redirect()->route('profile.edit')->with('success', 'Profile updated successfully.');
+    }
+
     public function edit(string $id)
     {
-        if(!Gate::allows('edit users')) {
+        if (!Gate::allows('edit users')) {
             abort(403);
         }
-        $roles = Role::all();
+
         $user = User::find($id);
-        $branches = Branch::where('status','Active')->get();
-        return view('users.edit',compact('roles','user','branches'));
+
+        // Check if the user has the Super Admin role
+        $isSuperAdmin = $user->getRoleNames()->contains('Super Admin');
+
+        // Fetch roles excluding Super Admin for non-super-admin users
+        $roles = $isSuperAdmin ? Role::where('name', 'Super Admin')->get() : Role::where('name', '!=', 'Super Admin')->get();
+        $branches = Branch::where('status', 'Active')->get();
+
+        return view('users.edit', compact('roles', 'user', 'branches', 'isSuperAdmin'));
     }
+
 
     /**
      * Update the specified resource in storage.
      */
     public function update(Request $request, string $id)
     {
-        if(!Gate::allows('edit users')) {
+        if (!Gate::allows('edit users')) {
             abort(403);
         }
         $validator = Validator::make($request->all(), [
-            'email' => 'required|email', 
-            'name' => 'required', 
+            'email' => 'required|email',
+            'name' => 'required',
             'role' => 'nullable|exists:roles,name'
         ]);
-    
+
         if ($validator->fails()) {
             return redirect()->back()->withErrors($validator)->withInput();
         }
@@ -111,18 +150,18 @@ class UserController extends Controller
         $user->name = $request->name;
         $user->email = $request->email;
         $user->branch_id = $request->branch_id;
-        if($request->password){
+        if ($request->password) {
             $user->password = Hash::make($request->password);
         }
-        
-       // Ensure the logged-in user is authenticated and their ID is valid
-       if (auth()->check() && auth()->id() != $user->id && $request->filled('role')) {
-        $user->syncRoles([$request->role]);
-    }
-        
+
+        // Ensure the logged-in user is authenticated and their ID is valid
+        if (auth()->check() && auth()->id() != $user->id && $request->filled('role')) {
+            $user->syncRoles([$request->role]);
+        }
+
         $user->save();
 
-        return redirect()->back()->with('success','User updated successfully');
+        return redirect()->back()->with('success', 'User updated successfully');
     }
 
     /**
@@ -130,10 +169,10 @@ class UserController extends Controller
      */
     public function destroy(string $id)
     {
-        if(!Gate::allows('delete users')) {
+        if (!Gate::allows('delete users')) {
             abort(403);
         }
-        $delete = User::where('id',$id)->delete();
+        $delete = User::where('id', $id)->delete();
         return response()->json([
             'success' => true,
             'message' => 'Role deleted successfully.'
