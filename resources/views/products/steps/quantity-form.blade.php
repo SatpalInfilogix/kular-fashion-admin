@@ -80,7 +80,7 @@
         <tr>
             <th>MRP</th>
             @foreach ($sizes as $size)
-                <td><input type="number" name="mrp[{{ $size->id }}]" min="0" value="{{ $savingProduct->mrp ?? $size->mrp }}" class="form-control"></td>
+                <td><input type="number" name="mrp[{{ $size->id }}]" min="0" step="any" value="{{ $savingProduct->mrp ?? $size->mrp }}" class="form-control"></td>
             @endforeach
         </tr>
 
