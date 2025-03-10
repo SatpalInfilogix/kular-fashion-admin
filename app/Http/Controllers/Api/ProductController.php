@@ -41,6 +41,8 @@ class ProductController extends Controller
                         ->groupBy('product_id')
                         ->havingRaw('SUM(quantity) > 0');
                 });
+
+                $q->orWhereDoesntHave('webInfo');
             });
 
             if ($request->has('brands')) {

@@ -1203,14 +1203,14 @@ class ProductController extends Controller
         }
 
         $request->validate([
-            'heading' => 'required',
             'name' => 'required',
             'price' => 'required|numeric',
             'sale_price' => 'nullable|numeric',
             'sale_start' => 'nullable|date',
             'sale_end' => 'nullable|date|after_or_equal:sale_start',
-            'meta_title' => 'required',
-            'meta_keywords' => 'required',
+            'heading' => 'nullable|string',
+            'meta_title' => 'nullable|string',
+            'meta_keywords' => 'nullable|string',
             'summary' => 'nullable|string',
             'description' => 'nullable|string',
             'specifications.*.key' => 'required|string',

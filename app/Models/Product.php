@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Cviebrock\EloquentSluggable\Sluggable;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Support\Str;
 
 class Product extends Model
 {
@@ -24,6 +25,10 @@ class Product extends Model
             $lastProduct = self::orderBy('id', 'desc')->first();
             $product->article_code = $lastProduct ? $lastProduct->article_code + 1 : 300001;
         });
+
+        static::saving(function ($product) {
+            $product->slug = $product->generateSlug();
+        });
     }
 
     public function sluggable(): array
@@ -33,6 +38,21 @@ class Product extends Model
                 'source' => 'name'
             ]
         ];
+    }
+
+    protected function generateSlug()
+    {
+        $slug = Str::slug($this->name);
+        $originalSlug = $slug;
+
+        // Check if the slug already exists, and if so, append a number to make it unique
+        $counter = 1;
+        while (self::where('slug', $slug)->exists()) {
+            $slug = $originalSlug . '-' . $counter;
+            $counter++;
+        }
+
+        return $slug;
     }
 
     public function department()

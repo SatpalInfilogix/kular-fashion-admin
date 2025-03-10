@@ -10,7 +10,7 @@
             type="{{ $type }}"
             name="{{ $name }}"
             id="{{ $name }}"
-            value="{{ old($validationInputName, $value) }}"
+            value="{!! old($validationInputName, $value) !!}"
             {{ $readonly ? 'readonly' : '' }}
             {{ $attributes->merge(['class' => 'form-control' . ($errors->has($validationInputName) ? ' is-invalid' : '')]) }}
         >

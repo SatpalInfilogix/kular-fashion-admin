@@ -5,12 +5,12 @@
 
         <div class="row">
             <div class="col-md-4 mb-2">
-                <x-form-input name="name" value="{{ $product->name ?? '' }}" label="Product Name"
+                <x-form-input name="name" value='{{ $product->name ?? "" }}' label="Product Name"
                     placeholder="Enter Product Name" required="true" />
             </div>
             <div class="col-md-2 mb-2">
-                <x-form-input name="price" type="number" step="0.01" value="{{ $product->price ?? '' }}"
-                    label="Price" placeholder="Enter Price" required="true" />
+                <x-form-input name="price" type="number" step="0.01" value="{{ $product->price ?? '' }}" label="Price"
+                    placeholder="Enter Price" required="true" />
             </div>
             <div class="col-md-2 mb-2">
                 <x-form-input name="sale_price" type="number" step="0.01" value="{{ $product->sale_price ?? '' }}"
@@ -29,12 +29,13 @@
 
             <div class="col-md-4 mb-2">
                 <label for="tags">Tags</label>
-                <select name="tags[]" id="tags" @class(['form-control', 'is-invalid' => $errors->has('tags')]) multiple>
+                <select name="tags[]" id="tags" @class(['form-control', 'is-invalid'=> $errors->has('tags')]) multiple>
                     <option value="" disabled>Select tag</option>
                     @foreach ($tags as $tag)
-                        <option value="{{ $tag->id }}" @selected(in_array($tag->id, old('tags', $product->tags->pluck('tag_id')->toArray())))>
-                            {{ $tag->name }}
-                        </option>
+                    <option value="{{ $tag->id }}" @selected(in_array($tag->id, old('tags',
+                        $product->tags->pluck('tag_id')->toArray())))>
+                        {{ $tag->name }}
+                    </option>
                     @endforeach
                 </select>
             </div>
@@ -48,26 +49,26 @@
         <h4 class="card-title">Specifications</h4>
         <div class="row" id="specification-container">
             @foreach (old('specifications', $product->webSpecification) as $specificationIndex => $specification)
-                <div class="col-md-6 specification-item mb-3" id="spec-0">
-                    <div class="row">
-                        <div class="col-md-5">
-                            <x-form-input name="specifications[{{ $specificationIndex }}][key]"
-                                value="{{ $specification->key ?? $specification['key'] }}" label="Key"
-                                placeholder="Key" class="form-control" required="true" />
-                        </div>
+            <div class="col-md-6 specification-item mb-3" id="spec-0">
+                <div class="row">
+                    <div class="col-md-5">
+                        <x-form-input name="specifications[{{ $specificationIndex }}][key]"
+                            value="{{ $specification->key ?? $specification['key'] }}" label="Key" placeholder="Key"
+                            class="form-control" required="true" />
+                    </div>
 
-                        <div class="col-md-5">
-                            <x-form-input name="specifications[{{ $specificationIndex }}][value]"
-                                value="{{ $specification->value ?? $specification['value'] }}" label="Value"
-                                placeholder="Value" class="form-control" required="true" />
-                        </div>
-                        <div class="col-md-2">
-                            <button class="btn btn-danger delete-specification mt-4" data-spec-id="spec-0"><i
-                                    class="fas fa-trash-alt"></i>
-                            </button>
-                        </div>
+                    <div class="col-md-5">
+                        <x-form-input name="specifications[{{ $specificationIndex }}][value]"
+                            value="{{ $specification->value ?? $specification['value'] }}" label="Value"
+                            placeholder="Value" class="form-control" required="true" />
+                    </div>
+                    <div class="col-md-2">
+                        <button class="btn btn-danger delete-specification mt-4" data-spec-id="spec-0"><i
+                                class="fas fa-trash-alt"></i>
+                        </button>
                     </div>
                 </div>
+            </div>
             @endforeach
         </div>
         <button id="add-specification" class="btn btn-secondary mt-3">Add Specification</button>
@@ -79,11 +80,13 @@
     <div class="card-body">
         <div>
             <h4 class="card-title">Summary</h4>
-            <textarea name="summary" id="summary" class="editor" rows="2">{{ $product->webInfo->summary ?? '' }}</textarea>
+            <textarea name="summary" id="summary" class="editor"
+                rows="2">{{ $product->webInfo->summary ?? '' }}</textarea>
         </div>
         <div class="mt-3">
             <h4 class="card-title">Description</h4>
-            <textarea name="description" id="description" class="editor" rows="2">{{ $product->webInfo->description ?? '' }}</textarea>
+            <textarea name="description" id="description" class="editor"
+                rows="2">{{ $product->webInfo->description ?? '' }}</textarea>
         </div>
     </div>
 </div>
@@ -106,14 +109,14 @@
                     </thead>
                     <tbody>
                         @foreach ($product->sizes as $index => $size)
-                            <tr>
-                                <td>{{ $index + 1 }}</td>
-                                <td>{{ $size->sizeDetail->size }}</td>
-                                <td><input type="text" name="sizes[{{ $size->id }}][web_price]"
-                                        class="form-control" value="{{ $size->web_price }}"></td>
-                                <td><input type="text" name="sizes[{{ $size->id }}][web_sale_price]"
-                                        class="form-control" value="{{ $size->web_sale_price }}"></td>
-                            </tr>
+                        <tr>
+                            <td>{{ $index + 1 }}</td>
+                            <td>{{ $size->sizeDetail->size }}</td>
+                            <td><input type="text" name="sizes[{{ $size->id }}][web_price]" class="form-control"
+                                    value="{{ $size->web_price }}"></td>
+                            <td><input type="text" name="sizes[{{ $size->id }}][web_sale_price]" class="form-control"
+                                    value="{{ $size->web_sale_price }}"></td>
+                        </tr>
                         @endforeach
                     </tbody>
                 </table>
@@ -131,29 +134,29 @@
                     </thead>
                     <tbody>
                         @foreach ($product->colors as $index => $color)
-                            <tr>
-                                <td>{{ $index + 1 }}</td>
-                                <td>{{ $color->colorDetail->name }}</td>
-                                <td class="d-flex align-items-center gap-2">
-                                    <div class="color-swatch-container">
-                                        <div class="avatar-sm" @style(['background: ' . $color->colorDetail->ui_color_code, 'background-image: url(' . asset($color->swatch_image_path) . ')'])>
-                                            <div class="overlay">
-                                                <i class="mdi mdi-camera-outline"></i>
-                                            </div>
+                        <tr>
+                            <td>{{ $index + 1 }}</td>
+                            <td>{{ $color->colorDetail->name }}</td>
+                            <td class="d-flex align-items-center gap-2">
+                                <div class="color-swatch-container">
+                                    <div class="avatar-sm"
+                                        @style(['background: ' . $color->colorDetail->ui_color_code, ' background-image:
+                                        url(' . asset($color->swatch_image_path) . ')'])>
+                                        <div class="overlay">
+                                            <i class="mdi mdi-camera-outline"></i>
                                         </div>
                                     </div>
+                                </div>
 
-                                    <input type="file" name="color_images[{{ $color->id }}]" accept="image/*"
-                                        class="color_image_picker d-none">
+                                <input type="file" name="color_images[{{ $color->id }}]" accept="image/*"
+                                    class="color_image_picker d-none">
 
-                                    <button type="button" data-input="removed_color_images"
-                                        data-id="{{ $color->id }}" @class([
-                                            'btn btn-text remove-image',
-                                            'd-none' => !$color->swatch_image_path,
-                                        ])>Remove
-                                        Image</button>
-                                </td>
-                            </tr>
+                                <button type="button" data-input="removed_color_images" data-id="{{ $color->id }}"
+                                    @class([ 'btn btn-text remove-image' , 'd-none'=> !$color->swatch_image_path,
+                                    ])>Remove
+                                    Image</button>
+                            </td>
+                        </tr>
                         @endforeach
                     </tbody>
                 </table>
@@ -176,8 +179,8 @@
             </div>
             <div class="col-md-4 d-flex gap-2 align-items-center">
                 <div class="small-toggle-button">
-                    <input type="checkbox" name="split_with_colors" id="splitWithColors" switch="success"
-                        data-on="On" data-off="Off" @checked(($product->webInfo->is_splitted_with_colors ?? 0) === 1) />
+                    <input type="checkbox" name="split_with_colors" id="splitWithColors" switch="success" data-on="On"
+                        data-off="Off" @checked(($product->webInfo->is_splitted_with_colors ?? 0) === 1) />
                     <label class="mb-0" for="splitWithColors" data-on-label="On" data-off-label="Off"></label>
                 </div>
                 <label for="splitWithColors">Split With Colors</label>
@@ -198,7 +201,7 @@
                     <option value="0">Select Color</option>
 
                     @foreach ($product->colors as $color)
-                        <option value="{{ $color->id }}"> {{ $color->colorDetail->name }} </option>
+                    <option value="{{ $color->id }}"> {{ $color->colorDetail->name }} </option>
                     @endforeach
                 </select>
             </div>
@@ -208,33 +211,33 @@
 
                 <input type="file" name="images[0][]" id="productImages0" class="d-none" multiple>
                 @foreach ($product->colors as $color)
-                    <input type="file" name="images[{{ $color->id }}][]" class="d-none"
-                        id="productImages{{ $color->id }}" multiple>
+                <input type="file" name="images[{{ $color->id }}][]" class="d-none" id="productImages{{ $color->id }}"
+                    multiple>
                 @endforeach
 
-                <input type="file" class="form-control" id="productImages" accept="image/*"
-                    multiple="multiple" />
+                <input type="file" class="form-control" id="productImages" accept="image/*" multiple="multiple" />
             </div>
         </div>
         <div id="imagePreview" class="row mt-2 image-preview"></div>
 
         <div class="row image-preview">
             @foreach ($product->webImage as $index => $image)
-                <div data-color-id="{{ $image->product_color_id ?? 0 }}" @class(['col-6 col-sm-2 mb-2', 'd-none' => $image->product_color_id ?? 0 !== 0])>
-                    <div class="preview-image-container">
-                        <img src="{{ asset($image->path) }}" alt="{{ $image->alt }}" class="img-fluid">
+            <div data-color-id="{{ $image->product_color_id ?? 0 }}" @class(['col-6 col-sm-2 mb-2', 'd-none'=>
+                $image->product_color_id ?? 0 !== 0])>
+                <div class="preview-image-container">
+                    <img src="{{ asset($image->path) }}" alt="{{ $image->alt }}" class="img-fluid">
 
-                        <button type="button" class="btn btn-danger btn-sm remove-image"
-                            data-input="removed_product_images" data-id="{{ $image->id }}">
-                            <i class="fa fa-trash"></i>
-                        </button>
+                    <button type="button" class="btn btn-danger btn-sm remove-image" data-input="removed_product_images"
+                        data-id="{{ $image->id }}">
+                        <i class="fa fa-trash"></i>
+                    </button>
 
-                        <div class="alt-container">
-                            <x-form-input value="{{ $image->alt }}" name="saved_image_alt[{{ $image->id }}]"
-                                placeholder="Alt text" />
-                        </div>
+                    <div class="alt-container">
+                        <x-form-input value="{{ $image->alt }}" name="saved_image_alt[{{ $image->id }}]"
+                            placeholder="Alt text" />
                     </div>
                 </div>
+            </div>
             @endforeach
         </div>
     </div>
@@ -246,20 +249,19 @@
         <h4 class="card-title">SEO</h4>
         <div class="row">
             <div class="col-sm-10 mb-2">
-                <x-form-input name="heading" label="Heading" required="true"
-                    value="{{ $product->webInfo->heading ?? '' }}" placeholder="Heading" />
+                <x-form-input name="heading" label="Heading" value="{{ $product->webInfo->heading ?? '' }}"
+                    placeholder="Heading" />
             </div>
         </div>
         <div class="row">
             <div class="col-sm-4">
                 <div class="mb-2">
-                    <x-form-input name="meta_title" label="Meta title" required="true"
-                        value="{{ $product->webInfo->meta_title ?? '' }}" placeholder="Meta title" />
+                    <x-form-input name="meta_title" label="Meta title" value="{{ $product->webInfo->meta_title ?? '' }}"
+                        placeholder="Meta title" />
                 </div>
                 <div class="mb-2">
                     <x-form-input name="meta_keywords" label="Meta Keywords"
-                        value="{{ $product->webInfo->meta_keywords ?? '' }}" placeholder="Meta Keywords"
-                        required="true" />
+                        value="{{ $product->webInfo->meta_keywords ?? '' }}" placeholder="Meta Keywords"/>
                 </div>
             </div>
             <div class="col-sm-6">
@@ -276,4 +278,4 @@
 <input type="hidden" name="removed_color_images">
 <input type="hidden" name="removed_product_images">
 
-<button type="submit" class="btn btn-primary waves-effect waves-light">Save Changes</button>
+<button type="submit" class="btn btn-primary waves-effect waves-light mb-2">Save Changes</button>
