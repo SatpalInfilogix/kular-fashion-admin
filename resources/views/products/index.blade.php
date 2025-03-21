@@ -113,6 +113,7 @@
                         d.brand_id = $('#brandFilter').val();
                         d.product_type_id = $('#typeFilter').val();
                         d.department_id = $('#departmentFilter').val();
+                        d.order = d.order; // Pass sorting parameters
                     }
                 },
                 columns: [
@@ -180,13 +181,7 @@
                         }
                     }
                 ],
-                // Sorting Manufacture Code (2nd Column), Brand (3rd Column), Product Type (4th Column) in Ascending Order (A-Z)
-                order: [
-                    [2, 'asc'], // Manufacture Code
-                    [3, 'asc'], // Brand
-                    [4, 'asc'],  // Product Type
-                    [6, 'asc']
-                ],
+                order: [[2, 'asc']], // Default sorting on Manufacture Code (3rd column)
                 drawCallback: function(settings) {
                     let api = this.api();
                     $('#product-table th, #product-table td').addClass('p-1');

@@ -609,26 +609,41 @@ class ProductController extends Controller
         }
 
         // Sorting logic
+        if ($request->has('order')) {
+            $columns = [
+                1 => 'article_code',
+                2 => 'manufacture_code',
+                3 => 'brands.name',
+                4 => 'product_types.name',
+                5 => 'departments.name',
+                6 => 'short_description',
+                7 => 'price',
+            ];
+    
+            $orderColumnIndex = $request->input('order.0.column');
+            $orderDirection = $request->input('order.0.dir', 'asc'); // 'asc' or 'desc'
+    
+            if (isset($columns[$orderColumnIndex])) {
+                $query->orderBy($columns[$orderColumnIndex], $orderDirection);
+            }
+        }
+    
         $products = $query
             ->join('brands', 'products.brand_id', '=', 'brands.id')
             ->join('product_types', 'products.product_type_id', '=', 'product_types.id')
-            ->orderBy('manufacture_code', 'asc')
-            ->orderBy('brands.name', 'asc')
-            ->orderBy('product_types.name', 'asc')
-            ->orderBy('price', 'asc') // Price sorted in ascending order
-            ->select('products.*') // Ensuring only necessary fields are selected
+            ->join('departments', 'products.department_id', '=', 'departments.id')
+            ->select('products.*')
             ->paginate($request->input('length', 10));
-
-        $data = [
+    
+        return response()->json([
             'draw' => $request->input('draw'),
             'recordsTotal' => $products->total(),
             'recordsFiltered' => $products->total(),
             'data' => $products->items(),
-        ];
-
-        return response()->json($data);
+        ]);
     }
-
+    
+    
 
 
     public function productStatus(Request $request)

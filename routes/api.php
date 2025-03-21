@@ -3,7 +3,8 @@
 use App\Http\Controllers\CollectionController;
 use App\Http\Controllers\ProductBarcodeController;
 use App\Http\Controllers\Api\ProductController;
-use App\Http\Controllers\API\LoginController;
+use App\Http\Controllers\Api\LoginController;
+use App\Http\Controllers\Api\CartController;
 use App\Http\Controllers\Api\BrandController;
 use App\Http\Controllers\Api\DepartmentController;
 use App\Http\Controllers\Api\ProductTypeController;
@@ -24,6 +25,7 @@ Route::post('products/add-manufacture-barcode', [ProductBarcodeController::class
 Route::post('/collections/check-name', [CollectionController::class, 'checkCollectionName']);
 
 Route::post('/login', [LoginController::class, 'login']);
+Route::post('/register', [LoginController::class, 'register']);
 Route::get('/brands', [BrandController::class, 'brands'])->name('brand.index');
 Route::get('/departments', [DepartmentController::class, 'departments'])->name('department.index');
 Route::get('/product-types', [ProductTypeController::class, 'producTypes'])->name('productType.index');
@@ -33,4 +35,13 @@ Route::get('/collection/{id}', [CollectionApiController::class, 'showCollection'
 Route::middleware('auth:sanctum')->group( function () {
     Route::post('products/{product}', [ProductController::class, 'showProduct'])->name('products.show');
     Route::post('/apply-coupon', [CouponController::class, 'applyCoupon']);
+});
+
+
+Route::prefix('cart')->group(function () {
+    Route::post('/add', [CartController::class, 'addToCart']);
+    Route::get('/', [CartController::class, 'viewCart']);
+    Route::put('/update', [CartController::class, 'updateCart']);
+    Route::delete('/remove/{id}', [CartController::class, 'removeItem']);
+    Route::delete('/clear', [CartController::class, 'clearCart']);
 });

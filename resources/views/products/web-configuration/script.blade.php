@@ -1,5 +1,10 @@
 <script>
     $(function() {
+        $('.search-image-modal').click(function() {
+            $('#googleImagesModal').modal('show');
+            initialize();
+        });
+
         $('.color-swatch-container').click(function() {
             $(this).parent().find('.color_image_picker').click();
         });
@@ -183,5 +188,185 @@
         $('#tags').select2({
             width: '100%'
         });
+
+        function initialize() {
+            const searchImageContent = `
+                <div class="row">
+                    <div class="col-md-2"></div>
+                    <div class="col-md-8 d-flex gap-2">
+                        <input type="text" id="google_search_keyword" class="form-control" placeholder="Enter search keyword">
+                        <button type="button" class="btn btn-primary search-by-keyword">Search</button>
+                    </div>
+                </div>
+                <div class="row image-container my-2"></div>
+                <div class="text-center my-1">
+                    <button id="loadMoreButton" type="button" class="btn btn-primary">Load More</button>
+                </div>
+            `;
+            $('#googleImagesModal .modal-body').html(searchImageContent);
+
+            // Set default search query
+            const searchQuery = `Blue Shirt`;
+            $('#google_search_keyword').val(searchQuery);
+
+            // Search button click event
+            $('.search-by-keyword').click(function() {
+                const searchKeyword = $('#google_search_keyword').val();
+                startIndex = 1;
+                allItems = [];
+                $('#googleImagesModal .image-container').html('');
+                loadMoreImages(searchKeyword);
+            });
+
+            // Load more button click event
+            $('#loadMoreButton').click(function() {
+                const searchKeyword = $('#google_search_keyword').val();
+                loadMoreImages(searchKeyword);
+            });
+
+            // Initial load with default search query
+            loadMoreImages(searchQuery);
+        }
+        function loadMoreImages(searchKeyword) {
+            fetchImages(startIndex, searchKeyword).done(function(response) {
+                if (response.items && response.items.length > 0) {
+                    $('#googleImagesModal .modal-body .alert').remove();
+
+                    allItems = allItems.concat(response.items);
+                    renderImages(response.items);
+                    startIndex += resultsPerPage;
+
+                    if (response.queries.nextPage) {
+                        $('#loadMoreButton').show();
+                    } else {
+                        $('#loadMoreButton').hide();
+                    }
+                } else {
+                    const alertHTML = `
+                        <div class="alert alert-danger fade show mt-2" role="alert">
+                            <strong>Oops!</strong> Search results not found.
+                        </div>
+                    `;
+                    $('#googleImagesModal .modal-body').append(alertHTML);
+
+                    $('#loadMoreButton').hide();
+                }
+            }).fail(function(apiErr) {
+                let {
+                    errors
+                } = apiErr.responseJSON.error;
+
+                errors.forEach(err => {
+                    const alertHTML = `
+                        <div class="alert alert-danger fade show mt-2" role="alert">
+                            <strong>Error!</strong> ${err.message}
+                        </div>
+                    `;
+                    $('#googleImagesModal .modal-body').append(alertHTML);
+                });
+
+
+                $('#loadMoreButton').hide();
+            });
+        }
+                    // Google Custom Search API variables
+        const searchEngineId = '{{ setting('google_search_engine_id') }}';
+        const googleSearchApiKey = '{{ setting('google_search_api_key') }}';
+        const resultsPerPage = 10;
+        let startIndex = 1;
+        let allItems = [];
+
+        function fetchImages(startIndex, searchKeyword) {
+            return $.ajax({
+                url: 'https://www.googleapis.com/customsearch/v1',
+                method: 'GET',
+                data: {
+                    q: searchKeyword,
+                    cx: searchEngineId,
+                    searchType: 'image',
+                    key: googleSearchApiKey,
+                    start: startIndex
+                }
+            });
+        }
+        function renderImages(items) {
+            let newContent = '';
+            $(items).each(function() {
+                newContent += `
+                    <div class="col-md-3">
+                        <img src="${this.link}" alt="${this.title}" data-image-url="${this.link}" class="img-fluid" />
+                    </div>
+                `;
+            });
+            $('#googleImagesModal .image-container').append(newContent);
+        }
+        $('#googleImagesModal').on('click', 'img', function() {
+            const imageUrl = $(this).data('image-url');
+
+            fetch(imageUrl)
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error(`HTTP error! Status: ${response.status}`);
+                    }
+                    return response.blob();
+                })
+                .then(blob => {
+                    const mimeType = blob.type;
+
+                    if (mimeType === "text/html") {
+                        alert("This image type is not supported. Please choose another.");
+                        return; 
+                    }
+
+                    fetchBinaryImage(imageUrl);
+
+                    $('#googleImagesModal img').removeClass('selected-image');
+                    $(this).addClass('selected-image');
+
+                    $('#googleImagesModal').modal('hide');
+                    $('#chooseColorImageModal').modal('hide');
+                })
+                .catch(error => {
+                    console.error("Error fetching image:", error);
+                });
+        });
+        function fetchBinaryImage(imageUrl) {
+            fetch(imageUrl)
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error(`HTTP error! Status: ${response.status}`);
+                    }
+                    return response.blob();
+                })
+                .then(blob => {
+                    const mimeType = blob.type;
+
+                    // Check if the response is an HTML error page
+                    if (mimeType === "text/html") {
+                        alert("This image type is not supported. Please choose another.");
+                        throw new Error("Received an HTML response instead of an image.");
+                    }
+
+                    const fileExtension = mimeType.split('/')[1]; 
+                    const fileName = `image.${fileExtension}`; 
+
+                    const file = new File([blob], fileName, { type: mimeType });
+
+                    const dataTransfer = new DataTransfer();
+                    dataTransfer.items.add(file);
+
+                    const fileInput = document.getElementById("productImages");
+
+                    fileInput.files = dataTransfer.files;
+
+                    fileInput.dispatchEvent(new Event("change", { bubbles: true }));
+                    console.log("Binary image added to input and change event triggered.");
+                })
+                .catch(error => {
+                    console.error("Error fetching image:", error);
+                });
+        }
+
+
     });
 </script>

@@ -199,7 +199,7 @@
         <h4 class="card-title mb-3">Images</h4>
 
         <div class="row">
-            <div class="col-md-4">
+            <div class="col-md-3">
                 <label for="colorForImages">Select Color</label>
                 <select id="colorForImages" class="form-control">
                     <option value="0">Select Color</option>
@@ -209,7 +209,7 @@
                 </select>
             </div>
 
-            <div class="col-md-4">
+            <div class="col-md-3">
                 <label for="colorForImages">Choose Images</label>
 
                 <input type="file" name="images[0][]" id="productImages0" class="d-none" multiple>
@@ -219,6 +219,12 @@
                 @endforeach
 
                 <input type="file" class="form-control" id="productImages" accept="image/*" multiple="multiple" />
+            </div>
+            <div class="col-md-3 mt-4">
+                <button type="button" class="btn btn-google w-100 search-image-modal">
+                    <img src="https://www.google.com/favicon.ico" alt="Google Logo" class="google-logo">
+                    Choose from Google
+                </button>
             </div>
         </div>
         <div id="imagePreview" class="row mt-2 image-preview"></div>
@@ -285,5 +291,18 @@
     <div class="card-body">
         <button type="submit" class="btn btn-primary waves-effect waves-light"><i class="fa fa-save me-2"></i>Save Changes</button>
         <a href="{{ setting('web_url') }}/product/{{$product->slug}}" class="btn btn-success waves-effect waves-light" target="_blank"><i class="fa fa-eye me-2"></i>View Product</a>
+    </div>
+</div>
+
+<div class="modal fade" id="googleImagesModal" tabindex="-1" aria-labelledby="googleImagesModalLabel"
+    aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="googleImagesModalLabel">Select Image For Color</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body"></div>
+        </div>
     </div>
 </div>

@@ -8,6 +8,7 @@ use App\Models\User;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use Spatie\Permission\Models\Role;
 
 class LoginController extends Controller
 {
@@ -41,6 +42,38 @@ class LoginController extends Controller
         }
     
         return response()->json(['success' => false, 'message' => 'Invalid credentials.'], 401);
+    }
+
+    public function register(Request $request){
+        $validator = Validator::make($request->all(), [
+            'email' => 'required|email|unique:users,email',
+            'name' => 'required',
+            //'phone_number' => 'required|digits:10|unique:users,phone_number',
+            'password' => 'required|min:6',
+        ]);
+    
+        if ($validator->fails()) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Validation errors',
+                'errors' => $validator->errors()
+            ], 422);
+        }
+    
+        $user = User::create([
+            "name" => $request->name,
+            "email" => $request->email,
+            //"phone_number" => $request->phone_number,
+            "password" => Hash::make($request->password),
+        ]);
+    
+        $user->assignRole('Customer');
+    
+        return response()->json([
+            'success' => true,
+            'message' => 'User registered successfully',
+            'data' => $user
+        ], 201);
     }
 
 }
