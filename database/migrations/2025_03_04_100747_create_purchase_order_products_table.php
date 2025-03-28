@@ -20,10 +20,11 @@ return new class extends Migration
             $table->unsignedBigInteger('min_size_id')->index();
             $table->unsignedBigInteger('max_size_id')->index();
             $table->date('delivery_date');
-            $table->decimal('price');
+            $table->decimal('price', 8, 2);
             $table->text('short_description')->nullable();
-
+            $table->softDeletes();
             $table->timestamps();
+
             $table->foreign('purchase_order_id')->references('id')->on('purchase_orders')->onDelete('cascade');
             $table->foreign('product_type_id')->references('id')->on('product_types')->onDelete('cascade');
             $table->foreign('size_scale_id')->references('id')->on('size_scales')->onDelete('cascade');

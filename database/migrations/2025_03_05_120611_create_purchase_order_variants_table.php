@@ -18,6 +18,7 @@ return new class extends Migration
             $table->string('supplier_color_name');
             $table->unsignedBigInteger('color_id')->index();
             $table->timestamps();
+
             $table->foreign('purchase_product_id')->references('id')->on('purchase_order_products')->onDelete('cascade');
             $table->foreign('color_id')->references('id')->on('colors')->onDelete('cascade');
         });

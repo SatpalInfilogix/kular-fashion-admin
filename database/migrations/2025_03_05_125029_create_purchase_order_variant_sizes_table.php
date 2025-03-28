@@ -15,8 +15,10 @@ return new class extends Migration
             $table->id();
             $table->unsignedBigInteger('purchase_product_variant_id')->index();
             $table->unsignedBigInteger('size_id')->index();
-            $table->string('quantity');
+            $table->integer('quantity')->default(0);
+            $table->softDeletes();
             $table->timestamps();
+
             $table->foreign('purchase_product_variant_id')->references('id')->on('purchase_order_variant_sizes')->onDelete('cascade');
             $table->foreign('size_id')->references('id')->on('sizes')->onDelete('cascade');
         });
