@@ -9,7 +9,7 @@ use Cviebrock\EloquentSluggable\Sluggable;
 class Department extends Model
 {
     use SoftDeletes, Sluggable;
-    protected $guarded =[];
+    protected $guarded = [];
 
     public function sluggable(): array
     {
@@ -18,5 +18,10 @@ class Department extends Model
                 'source' => 'name'
             ]
         ];
+    }
+
+    public function products()
+    {
+        return $this->hasMany(Product::class);
     }
 }

@@ -10,6 +10,7 @@ use App\Http\Controllers\Api\DepartmentController;
 use App\Http\Controllers\Api\ProductTypeController;
 use App\Http\Controllers\Api\CouponController;
 use App\Http\Controllers\Api\CollectionController as CollectionApiController;
+use App\Http\Controllers\Api\MenuController;
 use App\Http\Controllers\Api\UserAddressController;
 use App\Http\Controllers\GiftCardController;
 use Illuminate\Http\Request;
@@ -32,24 +33,22 @@ Route::get('/departments', [DepartmentController::class, 'departments'])->name('
 Route::get('/product-types', [ProductTypeController::class, 'producTypes'])->name('productType.index');
 Route::get('/collections', [CollectionApiController::class, 'collections']);
 Route::get('/collection/{id}', [CollectionApiController::class, 'showCollection']);
+Route::post('/apply-coupon', [CouponController::class, 'applyCoupon']);
+
+Route::post('/gift-cards/create', [GiftCardController::class, 'createGiftCard']);
+Route::get('/gift-cards', [GiftCardController::class, 'getGiftCards']);
+Route::post('/gift-cards/get', [GiftCardController::class, 'getGiftCard']); 
+Route::post('/gift-cards/redeem', [GiftCardController::class, 'redeemGiftCard']);
+Route::post('/gift-cards/delete', [GiftCardController::class, 'deleteGiftCard']);
+Route::get('/menus', [MenuController::class, 'index']);
 
 Route::middleware('auth:sanctum')->group(function () {
-    Route::post('products/{product}', [ProductController::class, 'showProduct'])->name('productss.show');
-    Route::post('/apply-coupon', [CouponController::class, 'applyCoupon']);
-
     Route::post('/addresses/create', [UserAddressController::class, 'store']);
     Route::get('/addresses', [UserAddressController::class, 'index']);
     Route::get('/addresses/default', [UserAddressController::class, 'show']);
     Route::put('/addresses/update', [UserAddressController::class, 'update']);
     Route::delete('/addresses/delete', [UserAddressController::class, 'destroy']);
-
-    Route::post('/gift-cards/create', [GiftCardController::class, 'createGiftCard']);
-    Route::get('/gift-cards', [GiftCardController::class, 'getGiftCards']);
-    Route::post('/gift-cards/get', [GiftCardController::class, 'getGiftCard']); 
-    Route::post('/gift-cards/redeem', [GiftCardController::class, 'redeemGiftCard']);
-    Route::post('/gift-cards/delete', [GiftCardController::class, 'deleteGiftCard']);
 });
-
 
 
 Route::middleware('auth:sanctum')->prefix('cart')->group(function () {
