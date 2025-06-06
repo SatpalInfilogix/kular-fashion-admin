@@ -268,7 +268,7 @@ class OrdersController extends Controller
                         CartItem::where('cart_id', $cart->id)->delete();
                         Cart::where('id', $cart->id)->delete();
 
-                        return response()->json(['success' => true,  'message' => 'Order Placed Successfully.' ], 200);
+                        return response()->json(['success' => true,  'message' => 'Order Placed Successfully.', 'order_id'=>$placeOrder->id], 200);
                     }else{
                         return response()->json(['success' => false,  'message' => 'Getting error in placing order. Please try again.' ], 200);
                     }
@@ -328,7 +328,7 @@ class OrdersController extends Controller
                         CartItem::where('cart_id', $cart->id)->delete();
                         Cart::where('id', $cart->id)->delete();
 
-                        return response()->json(['success' => true,  'message' => 'Order Placed Successfully.' ], 200);
+                        return response()->json(['success' => true,  'message' => 'Order Placed Successfully.','order_id'=>$placeOrder->id ], 200);
                     }else{
                         return response()->json(['success' => false,  'message' => 'Getting error in placing order. Please try again.' ], 200);
                     }
