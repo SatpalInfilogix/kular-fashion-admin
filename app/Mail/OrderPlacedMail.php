@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Mail;
 
 use Illuminate\Bus\Queueable;
@@ -18,7 +19,13 @@ class OrderPlacedMail extends Mailable
 
     public function build()
     {
-        return $this->subject('Your Order Confirmation: ' . $this->order->unique_order_id)
+        if (is_object($this->order) && isset($this->order->id)) {
+            \Log::info('Building order mail for order ID: ' . $this->order->id);
+        } else {
+            \Log::warning('Order object is missing or invalid in OrderPlacedMail.', ['order' => $this->order]);
+        }
+
+        return $this->subject('Your Order Confirmation: ' . ($this->order->unique_order_id ?? ''))
                     ->view('emails.order_placed');
     }
 }

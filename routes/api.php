@@ -92,12 +92,12 @@ Route::prefix('wishlist')->group(function () {
 });
 
 Route::middleware('auth:sanctum')->prefix('customer-addresses')->group(function () {
-    Route::get('/', [CustomerAddressesController::class, 'customer_addresses']);
-    Route::post('/add', [CustomerAddressesController::class, 'add_address']);
+    //Route::get('/', [CustomerAddressesController::class, 'customer_addresses']);
+    //Route::post('/add', [CustomerAddressesController::class, 'add_address']);
     Route::delete('/delete/{id}', [CustomerAddressesController::class, 'delete_address']);
     Route::put('/update/{id}', [CustomerAddressesController::class, 'updateAddress']);
 });
-Route::get('/customer-addresses', [CustomerAddressesController::class, 'customer_addresses']);
+Route::get('/customer-addresses/{user_id?}', [CustomerAddressesController::class, 'customer_addresses']);
 Route::post('/customer-addresses/add', [CustomerAddressesController::class, 'add_address']);
 
 Route::put('/cart/update', [CartController::class, 'updateQuantity']);
