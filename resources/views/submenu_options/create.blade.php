@@ -1,0 +1,28 @@
+@extends('layouts.app')
+
+@section('title', 'Create Submenu Option')
+
+@section('header-button')
+    <a href="{{ route('submenu-options.index') }}" class="btn btn-primary">
+        <i class="bx bx-arrow-back"></i> Go Back
+    </a>
+@endsection
+
+@section('content')
+    <div class="page-content">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-12">
+                    <x-error-message :message="session('message')" />
+                    <x-success-message :message="session('success')" />
+
+
+                    <form action="{{ route('submenu-options.store') }}" method="post" enctype="multipart/form-data">
+                        @csrf
+                        @include('submenu_options.form')
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+@endsection

@@ -38,6 +38,7 @@ use App\Http\Controllers\WebsiteOrdersController;
 use App\Http\Controllers\WebsiteGiftVoucherController;
 use App\Http\Controllers\CustomerController;
 use App\Http\Controllers\HomeController;
+use App\Http\Controllers\SubmenuOptionController;
 
 
 Route::get('/', function () {
@@ -84,6 +85,7 @@ Route::middleware(['auth', 'auth.session'])->group(function () {
        'gift-voucher'=>WebsiteGiftVoucherController::class,
        'customers' => CustomerController::class,
          'home' => HomeController::class,
+          'submenu-options' => SubmenuOptionController::class,
     ]);
     
 
