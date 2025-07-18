@@ -98,6 +98,10 @@
                         <li><a href="{{ route('weekely-turnover.index') }}">Weekely Turnover</a></li>
                     </ul>
                 </li>
+                <li class="menu-title" key="t-menu">Web Catalog</li>
+                @can('view webpages')
+                    <li><a href="{{ route('webpages.index') }}"><i class="fa-solid fa-list fs-5"></i>Web Pages</a></li>
+                @endcan
                 <li>
                     <a href="javascript: void(0);" class="has-arrow waves-effect">
                         <i class="fas fa-globe"></i>
@@ -111,12 +115,31 @@
                         <li>
                             <a href="javascript: void(0);" class="has-arrow">Web Settings</a>
                             <ul class="sub-menu" aria-expanded="false">
-                              <li><a href="{{ route('home.index') }}">Home</a></li>
+                                <li><a href="{{ route('home.index') }}">Home</a></li>
                             </ul>
                         </li>
                     </ul>
                 </li>
-
+                
+                @canany(['view settings'])
+                    <li>
+                        <a href="javascript: void(0);" class="has-arrow waves-effect">
+                            <i class="bx bx-cog"></i>
+                            <span>Web Settings</span>
+                        </a>
+                        <ul class="sub-menu" aria-expanded="false">
+                            @can('view settings')
+                                <li><a href="{{ route('web-settings.index') }}">General</a></li>
+                            @endcan
+                            @can('view settings')
+                                <li><a href="{{ route('shipping-methods.index') }}">Shipping Methods</a></li>
+                            @endcan
+                            @can('view settings')
+                                <li><a href="{{ route('payment-methods.index') }}">Payment Methods</a></li>
+                            @endcan
+                        </ul>
+                    </li>
+                @endcanany
 
                 @canany([
                     'view departments',
@@ -140,9 +163,8 @@
                 @endcanany
 
                 @canany(['view departments', 'view product types', 'view brands', 'view colors', 'view size scales',
-                    'view tags', 'view webpages'])
+                    'view tags'])
 
-                    <li><a href="{{ route('webpages.index') }}"><i class="fa-solid fa-list fs-5"></i>Web Pages</a></li>
                     <li><a href="{{ route('contact-us.index') }}"><i class="fa-solid fa-envelope fs-5"></i> Contact Us</a>
                     </li>
 
@@ -244,28 +266,6 @@
                         </ul>
                     </li>
                 @endcanany
-
-
-                @canany(['view settings'])
-                    <li>
-                        <a href="javascript: void(0);" class="has-arrow waves-effect">
-                            <i class="bx bx-cog"></i>
-                            <span>Web Settings</span>
-                        </a>
-                        <ul class="sub-menu" aria-expanded="false">
-                            @can('view settings')
-                                <li><a href="{{ route('web-settings.index') }}">General</a></li>
-                            @endcan
-                            @can('view settings')
-                                <li><a href="{{ route('shipping-methods.index') }}">Shipping Methods</a></li>
-                            @endcan
-                            @can('view settings')
-                                <li><a href="{{ route('payment-methods.index') }}">Payment Methods</a></li>
-                            @endcan
-                        </ul>
-                    </li>
-                @endcanany
-
 
             </ul>
         </div>

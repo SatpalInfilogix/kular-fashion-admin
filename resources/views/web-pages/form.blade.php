@@ -79,31 +79,27 @@
 
         <h4 class="card-title mt-2">Summary</h4>
         <textarea name="summary" id="summary" class="form-control editor" rows="5" placeholder="Enter Summary">{{ old('summary', $webPage->summary ?? '') }}</textarea>
-        <div class="row mt-4">
-            @foreach (['small', 'medium', 'large'] as $size)
-                <div class="col-md-4 mb-3">
-                    <div class="upload-area">
-                        <label class="form-label">{{ ucfirst($size) }} Image</label>
-                        <div class="dropzone">
-                            <input type="file" name="image_{{ $size }}" id="image_{{ $size }}"
-                                class="file-input" accept="image/*"
-                                onchange="previewImage(event, '{{ $size }}')">
 
-                            <div class="dropzone-content" id="preview_{{ $size }}">
-                                @if (!empty($webPage) && !empty($webPage->{'image_' . $size}))
-                                    <img src="{{ asset('assets/images/' . $webPage->{'image_' . $size}) }}"
-                                        alt="{{ $size }} image" class="img-thumbnail uploaded-image"
-                                        width="150">
-                                    <p>{{ basename($webPage->{'image_' . $size}) }}</p>
-                                @else
-                                    <i class="fas fa-cloud-upload-alt"></i>
-                                    <p>Drop file here to upload</p>
-                                @endif
-                            </div>
+        <div class="row mt-4">
+            <div class="col-md-6 mb-3">
+                <div class="upload-area">
+                    <label class="form-label">Image</label>
+                    <div class="dropzone">
+                        <input type="file" name="image_large" id="image_large" class="file-input" accept="image/*"
+                            onchange="previewImage(event, 'large')">
+
+                        <div class="dropzone-content" id="preview_large">
+                            @if (!empty($webPage) && !empty($webPage->image_large))
+                                <img src="{{ asset('assets/images/' . $webPage->image_large) }}" alt="large image"
+                                    class="img-thumbnail uploaded-image" width="15">
+                            @else
+                                <i class="fas fa-cloud-upload-alt"></i>
+                                <p>Drop file here to upload</p>
+                            @endif
                         </div>
                     </div>
                 </div>
-            @endforeach
+            </div>
         </div>
     </div>
 </div>
@@ -191,8 +187,10 @@
             </div>
         </div>
     </div>
+    <div class="sticky-submit">
+        <button type="submit" class="btn btn-primary w-md">Submit</button>
+    </div>
 </div>
-<button type="submit" class="btn btn-primary w-md">Submit</button>
 
 <!-- Include necessary plugins -->
 <x-include-plugins :plugins="['chosen', 'datePicker', 'contentEditor', 'select2']" />
@@ -205,7 +203,7 @@
     .dropzone {
         border: 2px dashed #ccc;
         border-radius: 5px;
-        padding: 25px;
+        padding: 20px;
         cursor: pointer;
         transition: all 0.3s ease;
         position: relative;
@@ -214,6 +212,26 @@
         align-items: center;
         justify-content: center;
         flex-direction: column;
+    }
+
+    .sticky-submit {
+        position: fixed;
+        bottom: 0;
+        left: 18.5%;
+        width: 80%;
+        background: #fff;
+        padding: 1rem 2rem;
+        text-align: right;
+        box-shadow: 0 -2px 8px rgba(0, 0, 0, 0.1);
+        z-index: 1050;
+    }
+
+    @media (max-width: 768px) {
+        .sticky-submit {
+            background: #f8f9fa;
+            left: 0;
+            width: 100%;
+        }
     }
 
     .dropzone-content {
@@ -319,6 +337,19 @@
             }
         });
 
+        function previewImage(event) {
+            const file = event.target.files[0];
+            const previewBox = document.getElementById('preview_large');
+
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    previewBox.innerHTML =
+                        `<img src="${e.target.result}" class="img-thumbnail uploaded-image" width="150">`;
+                };
+                reader.readAsDataURL(file);
+            }
+        }
 
         function toggleFilterList() {
             if ($('#filter_mode_show_some').is(':checked')) {
