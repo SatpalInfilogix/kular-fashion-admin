@@ -32,7 +32,7 @@ class Product extends Model
             $product->slug = $product->generateSlug();
         });
     }
- public function scopeWithAvailableSizes($query)
+    public function scopeWithAvailableSizes($query)
     {
         return $query->whereHas('sizes.quantities', function($q) {
             $q->where('total_quantity', '>', 0);

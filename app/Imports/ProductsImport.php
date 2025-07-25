@@ -138,6 +138,7 @@ class ProductsImport implements
             $product = Product::firstOrCreate(
                 ['name' => $name, 'manufacture_code' => $manufactureCode],
                 [
+                    'article_code' => $articleCode,
                     'slug' => Str::slug($name),
                     'brand_id' => $brand_id,
                     'department_id' => $department_id,

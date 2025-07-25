@@ -284,3 +284,21 @@ div#product-table_length {
 .dataTables_wrapper .dataTables_paginate .paginate_button {
     padding: unset !important;
 }
+.filter-section {
+    display: none; /* Initially hidden */
+    margin-top: 10px;
+}
+.filter-checkbox {
+    margin-top: 5px;
+}
+span.select2.select2-container.select2-container--default {
+    width: 100%!important;
+}
+li.collaps-list {
+    display: flex;
+    justify-content: space-between;
+    border: 1px solid #00000030;
+    border-radius: 4px;
+    align-items: center;
+    padding: 10px 10px;
+}

@@ -24,5 +24,11 @@
         </div>
     </div>
 
-    <x-include-plugins :plugins="['chosen', 'datePicker', 'contentEditor']"></x-include-plugins>
+    <x-include-plugins :plugins="['chosen', 'datePicker', 'contentEditor', 'select2']"></x-include-plugins>
+    <script>
+        $(document).ready(function() {
+            $('#sort_by,#filters').select2();
+        });
+    </script>
 @endsection
+

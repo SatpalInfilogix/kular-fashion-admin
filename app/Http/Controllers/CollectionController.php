@@ -6,6 +6,7 @@ use App\Models\Collection;
 use App\Models\Tag;
 use App\Models\Product;
 use App\Models\ProductType;
+use App\Models\ListingOption;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
 
@@ -65,7 +66,7 @@ class CollectionController extends Controller
             $imagePath = 'uploads/collections/' . $imageName;
         }
 
-        Collection::create([
+        $collection = Collection::create([
             'name' => $request->collection_name,
             'include_conditions' => json_encode($request->include),
             'exclude_conditions' => json_encode($request->exclude),
@@ -78,6 +79,19 @@ class CollectionController extends Controller
             'status' => $request->status,
             'image' => $imagePath,
         ]);
+
+        ListingOption::create([
+            'listable_id'       => $collection->id,
+            'listable_type'     => 'collection',
+            'hide_categories'   => $request->hide_category === 'hide' ? 1 : 0,
+            'hide_filters'      => $request->filter_option === 'hide' ? 1 : 0,
+            'show_all_filters'  => $request->filter_option === 'show' ? 1 : 0,
+            'visible_filters'   => is_array($request->filters) ? json_encode($request->filters) : $request->filters,
+            'collapsed_filters' => is_array($request->collaps) ? json_encode($request->collaps) : $request->collaps,
+            'show_per_page'     => $request->per_page,
+            'sort_options'      => is_array($request->sort_by) ? json_encode($request->sort_by) : $request->sort_by,
+        ]);
+        
 
         return redirect()->route('collections.index')->with('success', 'Collection Added successfully.');
     }
@@ -99,7 +113,7 @@ class CollectionController extends Controller
         if (!Gate::allows('edit collections')) {
             abort(403);
         }
-
+        $collection->load('listingOption');
         $conditionDependencies = [
             'tags' => Tag::select('id', 'name as value')->where('status', 'Active')->get(),
             'ProductTypes' => ProductType::select('id', 'name as value')->where('status', 'Active')->whereNull('deleted_at')->get(),
@@ -114,6 +128,10 @@ class CollectionController extends Controller
      */
     public function update(Request $request, Collection $collection)
     {
+        if (!Gate::allows('edit collections')) {
+            abort(403);
+        }
+
         $request->validate([
             'collection_name' => 'required|string|max:255',
             'image' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
@@ -146,8 +164,26 @@ class CollectionController extends Controller
             'image' => $imagePath,
         ]);
 
-        return redirect()->back()->with("success", "Collection Updated successfully");
+        // Update or create ListingOption
+        ListingOption::updateOrCreate(
+            [
+                'listable_id' => $collection->id,
+                'listable_type' => 'collection',
+            ],
+            [
+                'hide_categories'   => $request->hide_category === 'hide' ? 1 : 0,
+                'hide_filters'      => $request->filter_option === 'hide' ? 1 : 0,
+                'show_all_filters'  => $request->filter_option === 'show' ? 1 : 0,
+                'visible_filters'   => is_array($request->filters) ? json_encode($request->filters) : $request->filters,
+                'collapsed_filters' => is_array($request->collaps) ? json_encode($request->collaps) : $request->collaps,
+                'show_per_page'     => $request->per_page,
+                'sort_options'      => is_array($request->sort_by) ? json_encode($request->sort_by) : $request->sort_by,
+            ]
+        );
+
+        return redirect()->back()->with("success", "Collection updated successfully");
     }
+
 
     /**
      * Remove the specified resource from storage.

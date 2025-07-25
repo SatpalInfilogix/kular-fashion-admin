@@ -19,4 +19,9 @@ class Collection extends Model
             ]
         ];
     }
+
+    public function listingOption()
+    {
+        return $this->hasOne(ListingOption::class, 'listable_id','id');
+    }
 }

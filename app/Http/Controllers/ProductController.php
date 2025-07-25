@@ -567,9 +567,7 @@ class ProductController extends Controller
     {
         $query = Product::with(['brand', 'department', 'quantities', 'productType', 'colors.colorDetail', 'sizes.sizeDetail']);
 
-        if ($request->new_products_only) {
-            $query->where('are_barcodes_printed', 0)->orWhere('barcodes_printed_for_all', 0);
-        }
+
 
         if ($request->has('brand_id') && $request->brand_id) {
             $query->whereHas('brand', function ($q) use ($request) {
@@ -606,6 +604,9 @@ class ProductController extends Controller
                         $q->where('name', 'like', "%{$search}%");
                     });
             });
+        }
+        if ($request->new_products_only) {
+            $query->where('are_barcodes_printed', 0)->orWhere('barcodes_printed_for_all', 0);
         }
         
         // Sorting logic
@@ -663,7 +664,7 @@ class ProductController extends Controller
             ->join('departments', 'products.department_id', '=', 'departments.id')
             ->select('products.*')
             ->paginate($request->input('length', 10));
-    
+
         return response()->json([
             'draw' => $request->input('draw'),
             'recordsTotal' => $products->total(),

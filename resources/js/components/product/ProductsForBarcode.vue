@@ -26,6 +26,10 @@ export default {
     mounted() {
         const table = $('#product-table').DataTable({
             processing: true,
+            lengthMenu: [ 
+                [10, 25, 50, 100, 250, 350, 500, -1], 
+                [10, 25, 50, 100, 250, 350, 500] 
+            ],
             serverSide: true,
             ajax: {
                 url: '/get-products',

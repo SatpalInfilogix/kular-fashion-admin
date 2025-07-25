@@ -29,9 +29,12 @@
                     maxDate: "today"
                 });
                 flatpickr('.date-picker-publish', {
-                    dateFormat: "Y-m-d",
+                    enableTime: true,
+                    dateFormat: "Y-m-d H:i",
+                    time_24hr: true,
                     allowInput: true,
-                    maxDate: "today"
+                    maxDate: "today",
+                    defaultDate: "today"
                 });
                 flatpickr('.delivery-date-picker', {
                     dateFormat: "d-m-Y",

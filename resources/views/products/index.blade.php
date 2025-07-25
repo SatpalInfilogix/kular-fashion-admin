@@ -109,7 +109,10 @@
 
         var table = $('#product-table').DataTable({
             processing: true,
-
+            lengthMenu: [ 
+                [10, 25, 50, 100, 250, 350, 500, -1], 
+                [10, 25, 50, 100, 250, 350, 500] 
+            ],
             serverSide: true,
             dom: 'rt<"d-flex justify-content-between align-items-center "<"dt-info-left"i><"d-flex align-items-center gap-2"l p>><"clear">',
             
