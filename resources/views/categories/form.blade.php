@@ -12,7 +12,7 @@
                 <div class="mb-3">
                     <label for="category">Category</label>
                     <select class="form-control" id="category" name="parent_id">
-                        <option value="" disabled>Select Category</option>
+                        <option value="" >Select Category</option>
                         @include('products.partials.category-dropdown', [
                             'categories' => $categories,
                             'prefix' => '',
